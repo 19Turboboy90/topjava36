@@ -26,7 +26,6 @@ public class UserMealsUtil {
         return result;
     }
 
-
     private static Map<LocalDate, Integer> getCalculateCaloriesByCycle(List<UserMeal> meals) {
         Map<LocalDate, Integer> calculateCalories = new HashMap<>();
         meals.forEach(meal ->
