@@ -1,12 +1,10 @@
 package ru.javawebinar.topjava.util;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
-public class JspHelper {
-    private static final String JSP_FORMAT = "/WEB-INF/view/%s.jsp";
+public final class JspHelper {
+    private JspHelper() {
+    }
 
     public static String prefixPath(String jspName) {
-        return String.format(JSP_FORMAT, jspName);
+        return "/WEB-INF/view/" + jspName + ".jsp";
     }
 }

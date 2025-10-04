@@ -6,39 +6,32 @@
 </head>
 <body>
 <div>
-    <c:choose>
-        <c:when test="${requestScope.meal == null}">
-            <h2>Add Meal</h2>
-        </c:when>
-        <c:otherwise>
-            <h2>Update Meal</h2>
-        </c:otherwise>
-    </c:choose>
+    <h2><c:out value="${requestScope.meal == null ? 'Add Meal' : 'Update Meal'}"/></h2>
 </div>
 <div>
-    <form action="${requestScope.request.contextPath}meals" method="post" name="addMeal">
+    <form action="meals" method="post" name="addMeal">
         <div>
             <input type="hidden" id="mealId" name="mealId"
-                   value="${requestScope.meal != null ? requestScope.meal.id : ''}">
+                   value="${meal != null ? meal.id : ''}">
         </div>
         <div>
             <label for="dateTime">DateTime:
                 <input type="datetime-local" id="dateTime" name="dateTime"
-                       value="${requestScope.meal != null ? requestScope.meal.dateTime : ''}" required>
+                       value="${meal != null ? meal.dateTime : ''}" required>
             </label>
         </div>
         <br>
         <div>
             <label for="description">Description:
                 <input type="text" id="description" name="description"
-                       value="${requestScope.meal != null ? requestScope.meal.description : ''}" required>
+                       value="${meal != null ? meal.description : ''}" required>
             </label>
         </div>
         <br>
         <div>
             <label for="calories">Calories:
                 <input type="number" id="calories" name="calories"
-                       value="${requestScope.meal != null ? requestScope.meal.calories : ''}" required>
+                       value="${meal != null ? meal.calories : ''}" required>
             </label>
         </div>
         <br>

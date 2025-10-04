@@ -5,7 +5,7 @@
     <title>Meals</title>
 </head>
 <body>
-<h3><a href="${pageContext.request.contextPath}/index.html">Home</a></h3>
+<h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
 <div>
@@ -15,16 +15,15 @@
 <div>
     <table border="1px">
         <tr>
-            <th>Id</th>
             <th>DateTime</th>
             <th>Description</th>
             <th>Calories</th>
             <th></th>
             <th></th>
         </tr>
-        <c:forEach var="meal" items="${requestScope.meals}">
+        <c:forEach var="meal" items="${meals}">
             <tr style="color:${meal.excess == true ? 'red' : 'green'}">
-                <td>${meal.id}</td>
+                <td hidden="hidden">${meal.id}</td>
                 <td>${meal.date} ${meal.time}</td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
