@@ -12,8 +12,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealStorageInMemory implements Storage<Integer, Meal> {
-    private static final Logger log = LoggerFactory.getLogger(MealStorageInMemory.class);
+public class InMemoryMealStorage implements Storage<Integer, Meal> {
+    private static final Logger log = LoggerFactory.getLogger(InMemoryMealStorage.class);
 
     private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
     private final AtomicInteger id = new AtomicInteger(0);

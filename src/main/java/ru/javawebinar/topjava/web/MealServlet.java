@@ -2,7 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.MealStorageInMemory;
+import ru.javawebinar.topjava.storage.InMemoryMealStorage;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.JspHelper;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -20,7 +20,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
 
-    private final MealStorageInMemory mealStorage = new MealStorageInMemory();
+    private final InMemoryMealStorage mealStorage = new InMemoryMealStorage();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
