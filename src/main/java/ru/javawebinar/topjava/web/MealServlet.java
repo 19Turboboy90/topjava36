@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
@@ -20,27 +21,29 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
-
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
     ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-    private final MealRestController controller = new MealRestController(appCtx.getBean(MealService.class));
+    MealRestController controller;
+
+    @Override
+    public void init() throws ServletException {
+        controller = new MealRestController(appCtx.getBean(MealService.class));
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
 
-        MealTo mealTo = new MealTo(id.isEmpty() ? null : Integer.parseInt(id),
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")),
-                authUserId());
+                Integer.parseInt(request.getParameter("calories")));
 
-        log.info(mealTo.isNew() ? "Create {}" : "Update {}", mealTo);
-        controller.save(mealTo);
+        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+        controller.create(meal);
         response.sendRedirect("meals");
     }
 
@@ -57,20 +60,16 @@ public class MealServlet extends HttpServlet {
                 break;
             case "create":
             case "update":
-                final MealTo mealTo = "create".equals(action) ?
-                        new MealTo(
-                                null,
-                                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-                                "",
-                                1000,
-                                authUserId()) :
+                final Meal meal = "create".equals(action) ?
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
                         controller.get(getId(request));
-                request.setAttribute("meal", mealTo);
+                request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "all":
             default:
                 log.info("getAll");
+
                 request.setAttribute("meals", getAllByDateOrTime(request));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
@@ -89,10 +88,10 @@ public class MealServlet extends HttpServlet {
         String toTime = request.getParameter("toTime");
 
         return controller.filterByDateAndTime(
-                fromDate == null || fromDate.isEmpty() ? LocalDate.MIN : LocalDate.parse(fromDate),
-                toDate == null || toDate.isEmpty() ? LocalDate.MAX : LocalDate.parse(toDate),
-                fromTime == null || fromTime.isEmpty() ? LocalTime.MIN : LocalTime.parse(fromTime),
-                toTime == null || toTime.isEmpty() ? LocalTime.MAX : LocalTime.parse(toTime)
+                fromDate == null || fromDate.isEmpty() ? null : LocalDate.parse(fromDate),
+                toDate == null || toDate.isEmpty() ? null : LocalDate.parse(toDate),
+                fromTime == null || fromTime.isEmpty() ? null : LocalTime.parse(fromTime),
+                toTime == null || toTime.isEmpty() ? null : LocalTime.parse(toTime)
         );
     }
 

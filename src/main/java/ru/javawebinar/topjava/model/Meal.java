@@ -11,19 +11,16 @@ public class Meal extends AbstractBaseEntity {
 
     private final int calories;
 
-    private Integer userId;
-
-    public Meal(LocalDateTime dateTime, String description, int calories, Integer userId) {
-        this(null, dateTime, description, calories, userId);
+    public Meal(LocalDateTime dateTime, String description, int calories) {
+        this(null, dateTime, description, calories);
     }
 
-    public Meal(Integer id, LocalDateTime dateTime, String description, int calories, Integer userId) {
+    public Meal(Integer id, LocalDateTime dateTime, String description, int calories) {
         super(id);
         this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        this.userId = userId;
     }
 
     public LocalDateTime getDateTime() {
@@ -46,16 +43,8 @@ public class Meal extends AbstractBaseEntity {
         return dateTime.toLocalTime();
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
     public boolean isNew() {
-        return super.isNew();
+        return id == null;
     }
 
     @Override

@@ -5,71 +5,56 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.to.MealMapper;
 import ru.javawebinar.topjava.to.MealTo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
-import static ru.javawebinar.topjava.util.MealsUtil.getTos;
+import static ru.javawebinar.topjava.util.MealsUtil.*;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
 
 @Service
 public class MealService {
     private static final Logger log = LoggerFactory.getLogger(MealService.class);
     private final MealRepository repository;
-    private final MealMapper mealMapper;
 
-    public MealService(MealRepository repository, MealMapper mealMapper) {
+    public MealService(MealRepository repository) {
         this.repository = repository;
-        this.mealMapper = mealMapper;
     }
 
-    public MealTo save(MealTo mealTo, int userId) {
-        log.info("save, meal = {}, userId = {}", mealTo, userId);
-        checkNotFound(userId, userId);
-        Meal meal = mealMapper.mapToMeal(mealTo);
-        if (mealTo.isNew()) {
-            meal.setUserId(userId);
-        } else {
-            checkNotFound(meal.getUserId() == userId, userId);
-        }
-        Meal saveMeal = repository.save(meal);
-        return mealMapper.mapToDto(saveMeal);
+    public Meal save(Meal meal, int userId) {
+        log.info("save, meal = {}, userId = {}", meal, userId);
+        return repository.save(meal, userId);
     }
 
     public void delete(int mealId, int userId) {
         log.info("delete, mealId = {}, userId = {}", mealId, userId);
-        checkNotFound(mealId, mealId);
-        checkNotFound(userId, userId);
-        Meal meal = repository.get(mealId);
-        checkNotFound(meal.getUserId() == userId, userId);
-        repository.delete(mealId);
+        checkNotFound(repository.delete(mealId, userId), mealId);
     }
 
-    public MealTo get(int mealId, int userId) {
-        log.info("get, mealId = {}, userId  = {}", mealId, userId);
-        checkNotFound(mealId, mealId);
-        Meal meal = repository.get(mealId);
-        checkNotFound(meal, mealId);
-        checkNotFound(meal.getUserId() == userId, userId);
-        return mealMapper.mapToDto(meal);
+    public Meal get(int mealId, int userId) {
+        log.info("get, mealId = {}, userId = {}", mealId, userId);
+        return checkNotFound(repository.get(mealId, userId), mealId);
     }
 
     public List<MealTo> getAll(int userId) {
         log.info("getAll, userId = {}", userId);
-        checkNotFound(userId, userId);
         return getTos(repository.getAll(userId), DEFAULT_CALORIES_PER_DAY);
     }
 
 
-    public List<MealTo> filterByDate(LocalDate fromDate, LocalDate toDate,
-                                     LocalTime fromTime, LocalTime toTime, int userId) {
-        log.info("filterByDateAndTime, fromDate = {}, toDate = {}, userId = {}, fromTime = {}, toTime = {}",
+    public List<MealTo> filterByDateAndTime(LocalDate fromDate, LocalDate toDate,
+                                            LocalTime fromTime, LocalTime toTime, int userId) {
+        log.info("filterByDateAndTime, fromDate = {}, toDate = {}, fromTime = {}, toTime = {}, userId = {}",
                 fromDate, toDate, fromTime, toTime, userId);
-        checkNotFound(userId, userId);
-        return getTos(repository.filterByDate(fromDate, toDate, fromTime, toTime, userId), DEFAULT_CALORIES_PER_DAY);
+        return getFilteredTos(repository.filterByDate(fromDate, toDate, userId),
+                DEFAULT_CALORIES_PER_DAY, fromTime, toTime);
+
+    }
+
+    public void update(Meal meal, int userId) {
+        log.info("update, meal = {}, userId = {}", meal, userId);
+        checkNotFound(repository.save(meal, userId), meal.getId());
     }
 }

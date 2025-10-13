@@ -10,7 +10,6 @@
             <constructor-arg name="repository" ref="inmemoryUserRepository"/>
         </bean>
     -->
-    <bean class="ru.javawebinar.topjava.to.MealMapper" id="mealMapper"/>
 
     <context:component-scan base-package="ru.javawebinar.**.repository"/>
 

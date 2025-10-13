@@ -11,25 +11,14 @@ public class MealTo {
 
     private final int calories;
 
-    private boolean excess;
+    private final boolean excess;
 
-    private final Integer userId;
-
-    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess, Integer userId) {
+    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
         this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
         this.excess = excess;
-        this.userId = userId;
-    }
-
-    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, Integer userId) {
-        this.id = id;
-        this.dateTime = dateTime;
-        this.description = description;
-        this.calories = calories;
-        this.userId = userId;
     }
 
     public Integer getId() {
@@ -52,10 +41,6 @@ public class MealTo {
         return excess;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
-
     public boolean isNew() {
         return id == null;
     }
@@ -68,7 +53,6 @@ public class MealTo {
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
                 ", excess=" + excess +
-                ", userId=" + userId +
                 '}';
     }
 }
