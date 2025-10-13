@@ -21,6 +21,38 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+
+    <div>
+        <form action="meals" method="get">
+            <div>
+                <label for="fromDate">
+                    <input type="date" name="fromDate" id="fromDate" value="${param.fromDate}"
+                           placeholder="От даты (включая)">
+                </label>
+                <label for="toDate">
+                    <input type="date" name="toDate" id="toDate" value="${param.toDate}"
+                           placeholder="До даты (включая)">
+                </label>
+            </div>
+            <br>
+            <div>
+                <label for="fromTime">
+                    <input type="time" name="fromTime" id="fromTime" value="${param.fromTime}"
+                           placeholder="От времени (включая)">
+                </label>
+                <label for="toTime">
+                    <input type="time" name="toTime" id="toTime" value="${param.toTime}"
+                           placeholder="До времени (исключая)">
+                </label>
+            </div>
+            <br>
+            <div>
+                <button type="submit">Filter</button>
+                <input type="button" value="Cancel" onclick="location.href = 'meals'">
+            </div>
+        </form>
+    </div>
+
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">

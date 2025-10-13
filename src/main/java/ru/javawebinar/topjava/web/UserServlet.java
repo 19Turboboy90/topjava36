@@ -1,9 +1,6 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import ru.javawebinar.topjava.web.user.AdminRestController;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,36 +14,20 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
 
-    ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-    private final AdminRestController controller = appCtx.getBean(AdminRestController.class);
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("forward to users");
+        request.getRequestDispatcher("/users.jsp").forward(request, response);
+    }
 
-        String action = request.getParameter("action");
-
-        switch (action == null ? "all" : action) {
-            case "meals":
-                int id = getId(request);
-                log.info("get");
-
-            default:
-                request.setAttribute("users", controller.getAll());
-                request.getRequestDispatcher("/users.jsp").forward(request, response);
-                break;
-        }
-
-
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        SecurityUtil.setAuthUserId(getId(req));
+        resp.sendRedirect("meals");
     }
 
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
+        log.info("paramId = {}", paramId);
         return Integer.parseInt(paramId);
-    }
-
-    @Override
-    public void destroy() {
-        appCtx.close();
     }
 }

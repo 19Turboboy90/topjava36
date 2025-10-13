@@ -9,10 +9,17 @@
 <hr>
 <h2>Users</h2>
 <div>
-    <c:forEach var="user" items="${requestScope.users}">
-        <%--        <li><a href="meals?action=all&userId=${user.id}">${user.name}</a></li>--%>
-        <li><a href="meals?action=all">${user.name}</a></li>
-    </c:forEach>
+    <div>
+        <form method="post">
+            <label for="id">
+                <select name="id" id="id">
+                    <option value="1">Admin</option>
+                    <option value="2">User</option>
+                </select>
+                <input type="submit" value="Apply">
+            </label>
+        </form>
+    </div>
 </div>
 </body>
 </html>

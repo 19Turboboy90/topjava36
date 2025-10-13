@@ -11,14 +11,25 @@ public class MealTo {
 
     private final int calories;
 
-    private final boolean excess;
+    private boolean excess;
 
-    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
+    private final Integer userId;
+
+    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess, Integer userId) {
         this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
         this.excess = excess;
+        this.userId = userId;
+    }
+
+    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, Integer userId) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.description = description;
+        this.calories = calories;
+        this.userId = userId;
     }
 
     public Integer getId() {
@@ -41,6 +52,14 @@ public class MealTo {
         return excess;
     }
 
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public boolean isNew() {
+        return id == null;
+    }
+
     @Override
     public String toString() {
         return "MealTo{" +
@@ -49,6 +68,7 @@ public class MealTo {
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
                 ", excess=" + excess +
+                ", userId=" + userId +
                 '}';
     }
 }
