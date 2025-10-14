@@ -44,7 +44,6 @@ public class MealService {
         return getTos(repository.getAll(userId), caloriesPerDay);
     }
 
-
     public List<MealTo> filterByDateAndTime(LocalDate fromDate, LocalDate toDate,
                                             LocalTime fromTime, LocalTime toTime, int caloriesPerDay, int userId) {
         log.info("filterByDateAndTime, fromDate = {}, toDate = {}, fromTime = {}, toTime = {}, userId = {}",
@@ -52,7 +51,6 @@ public class MealService {
 
         return getFilteredTos(repository.filterByDate(fromDate, toDate, userId),
                 caloriesPerDay, fromTime, toTime);
-
     }
 
     public void update(Meal meal, int userId) {
