@@ -24,14 +24,15 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> save(meal, 1));
+        MealsUtil.meals1.forEach(meal -> save(meal, 1));
+        MealsUtil.meals2.forEach(meal -> save(meal, 2));
     }
 
     @Override
     public Meal save(Meal meal, int userId) {
         log.info("save meal = {}, userId = {}", meal, userId);
 
-        Map<Integer, Meal> meals = mealsMap.computeIfAbsent(userId, id -> new HashMap<>());
+        Map<Integer, Meal> meals = mealsMap.computeIfAbsent(userId, id -> new ConcurrentHashMap<>());
 
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
@@ -44,28 +45,31 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int mealId, int userId) {
         log.info("delete, mealId = {}, userId = {}", mealId, userId);
-        return mealsMap.get(userId).remove(mealId) != null;
+        Map<Integer, Meal> meals = mealsMap.get(userId);
+        return meals != null && meals.remove(mealId) != null;
     }
 
     @Override
     public Meal get(int mealId, int userId) {
         log.info("get, mealId = {}, mealId = {}", mealId, userId);
-        return mealsMap.get(userId).get(mealId);
+        Map<Integer, Meal> getMeal = mealsMap.get(userId);
+        return getMeal.get(mealId) != null ? getMeal.get(mealId) : null;
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         log.info("getAll, userId = {}", userId);
-        return mealsMap.get(userId).values().stream()
-                .sorted(Comparator.comparing(Meal::getDate).reversed())
-                .collect(toList());
+        return filterByDate(null, null, userId);
     }
 
     @Override
     public List<Meal> filterByDate(LocalDate fromDate, LocalDate toDate, int userId) {
-        Collection<Meal> all = getAll(userId);
-        return all.stream()
+        Collection<Meal> result = mealsMap.get(userId) != null ?
+                mealsMap.get(userId).values() : Collections.emptyList();
+
+        return result.stream()
                 .filter(meal -> isBetweenHalfOpen(meal.getDate(), fromDate, toDate))
+                .sorted(Comparator.comparing(Meal::getDate).reversed())
                 .collect(toList());
     }
 }

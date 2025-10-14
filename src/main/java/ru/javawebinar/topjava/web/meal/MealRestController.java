@@ -11,6 +11,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkIsNew;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
@@ -24,6 +27,7 @@ public class MealRestController {
 
     public Meal create(Meal meal) {
         log.info("meal= {}", meal);
+        checkIsNew(meal);
         return service.save(meal, authUserId());
     }
 
@@ -39,12 +43,13 @@ public class MealRestController {
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        return service.getAll(authUserId());
+        return service.getAll(authUserCaloriesPerDay(), authUserId());
     }
 
-    public void update(Meal meal, int userId) {
-        log.info("update, meal= {}, userId = {}", meal, userId);
-        service.update(meal, userId);
+    public void update(Meal meal, int mealId) {
+        log.info("update, meal= {}, mealId = {}", meal, meal);
+        assureIdConsistent(meal, mealId);
+        service.update(meal, authUserId());
     }
 
     public List<MealTo> filterByDateAndTime(LocalDate fromDate, LocalDate toDate, LocalTime fromTime, LocalTime toTime) {
@@ -55,6 +60,7 @@ public class MealRestController {
                 toDate == null ? LocalDate.MAX : toDate.plusDays(1),
                 fromTime == null ? LocalTime.MIN : fromTime,
                 toTime == null ? LocalTime.MAX : toTime,
+                authUserCaloriesPerDay(),
                 authUserId());
     }
 }

@@ -11,7 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static ru.javawebinar.topjava.util.MealsUtil.*;
+import static ru.javawebinar.topjava.util.MealsUtil.getFilteredTos;
+import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
 
 @Service
@@ -38,18 +39,19 @@ public class MealService {
         return checkNotFound(repository.get(mealId, userId), mealId);
     }
 
-    public List<MealTo> getAll(int userId) {
+    public List<MealTo> getAll(int caloriesPerDay, int userId) {
         log.info("getAll, userId = {}", userId);
-        return getTos(repository.getAll(userId), DEFAULT_CALORIES_PER_DAY);
+        return getTos(repository.getAll(userId), caloriesPerDay);
     }
 
 
     public List<MealTo> filterByDateAndTime(LocalDate fromDate, LocalDate toDate,
-                                            LocalTime fromTime, LocalTime toTime, int userId) {
+                                            LocalTime fromTime, LocalTime toTime, int caloriesPerDay, int userId) {
         log.info("filterByDateAndTime, fromDate = {}, toDate = {}, fromTime = {}, toTime = {}, userId = {}",
                 fromDate, toDate, fromTime, toTime, userId);
+
         return getFilteredTos(repository.filterByDate(fromDate, toDate, userId),
-                DEFAULT_CALORIES_PER_DAY, fromTime, toTime);
+                caloriesPerDay, fromTime, toTime);
 
     }
 

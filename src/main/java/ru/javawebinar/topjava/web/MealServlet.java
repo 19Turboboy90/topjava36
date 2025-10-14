@@ -24,11 +24,12 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
-    ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-    MealRestController controller;
+    private ConfigurableApplicationContext appCtx;
+    private MealRestController controller;
 
     @Override
     public void init() throws ServletException {
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         controller = new MealRestController(appCtx.getBean(MealService.class));
     }
 
@@ -36,6 +37,7 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
+        log.info("getParameter id = {}", id);
 
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
@@ -43,7 +45,14 @@ public class MealServlet extends HttpServlet {
                 Integer.parseInt(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        controller.create(meal);
+
+        if (meal.isNew()) {
+            log.info("create, meal = {}", meal);
+            controller.create(meal);
+        } else {
+            log.info("update, meal = {}, mealId = {}", meal, meal.getId());
+            controller.update(meal, Integer.parseInt(id));
+        }
         response.sendRedirect("meals");
     }
 
