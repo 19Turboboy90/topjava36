@@ -4,12 +4,11 @@ DROP TABLE IF EXISTS users;
 DROP SEQUENCE IF EXISTS user_seq;
 DROP SEQUENCE IF EXISTS meal_seq;
 
-CREATE SEQUENCE user_seq START WITH 100000;
-CREATE SEQUENCE meal_seq START WITH 100000;
+CREATE SEQUENCE global_seq START WITH 100000;
 
 CREATE TABLE users
 (
-    id               INTEGER PRIMARY KEY DEFAULT nextval('user_seq'),
+    id               INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
     name             VARCHAR                           NOT NULL,
     email            VARCHAR                           NOT NULL,
     password         VARCHAR                           NOT NULL,
@@ -29,7 +28,7 @@ CREATE TABLE user_role
 
 CREATE TABLE meal
 (
-    id          INTEGER PRIMARY KEY DEFAULT nextval('meal_seq'),
+    id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
     date_time   TIMESTAMP NOT NULL,
     description VARCHAR   NOT NULL,
     calories    INTEGER   NOT NULL,

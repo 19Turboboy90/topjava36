@@ -12,8 +12,7 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealTestData {
 
-    public static final Integer MEAL_ID = START_SEQ;
-    public static final Integer USER_ID = START_SEQ;
+    public static final Integer MEAL_ID = START_SEQ + 3;
 
     public static final Meal meal1 =
             new Meal(MEAL_ID, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
@@ -30,9 +29,13 @@ public class MealTestData {
     public static final Meal meal7 =
             new Meal(MEAL_ID + 6, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
 
-    public static Meal getUpdatedMeal() {
+    public static Meal getNew() {
+        return new Meal(null, LocalDateTime.of(2025, 10, 25, 17, 30), "newMeal", 10);
+    }
+
+    public static Meal getUpdated() {
         Meal updated = new Meal(meal1);
-        updated.setDateTime(LocalDateTime.now());
+        updated.setDateTime(LocalDateTime.of(2025, 10, 25, 17, 30));
         updated.setDescription("updateDescription");
         updated.setCalories(100);
         return updated;
@@ -51,6 +54,6 @@ public class MealTestData {
     }
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }

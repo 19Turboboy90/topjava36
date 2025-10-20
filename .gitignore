@@ -4,5 +4,6 @@ target
 *.iml
 log
 *.patch
+/src/main/resources/db/postgres-local.properties
 
 
