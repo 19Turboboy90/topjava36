@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-public class UserServiceTest extends AbstractBaseEntityTest {
+public class UserServiceTest extends AbstractBaseEntityServiceTest {
 
     static {
         // Only for postgres driver logging

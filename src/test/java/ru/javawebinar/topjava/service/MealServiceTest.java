@@ -15,7 +15,7 @@ import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.MealTestData.assertMatch;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-public class MealServiceTest extends AbstractBaseEntityTest {
+public class MealServiceTest extends AbstractBaseEntityServiceTest {
 
     @Autowired
     private MealService service;
@@ -28,7 +28,7 @@ public class MealServiceTest extends AbstractBaseEntityTest {
 
     @Test
     public void getNotExistMeal() {
-        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, USER_ID));
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND_MEAL, USER_ID));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class MealServiceTest extends AbstractBaseEntityTest {
 
     @Test()
     public void deleteNotExistMeal() {
-        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND_MEAL, USER_ID));
     }
 
     @Test()
