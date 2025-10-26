@@ -1,19 +1,45 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@NamedQueries({
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.GET_ALL, query = "SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.GET_ALL_BY_DATE_TIME, query = "SELECT m FROM Meal m " +
+                "WHERE m.user.id=:userId " +
+                "AND m.dateTime >=:startDateTime " +
+                "AND m.dateTime <:endDateTime " +
+                "ORDER BY m.dateTime DESC")
+})
+@Entity
+@Table(name = "meal")
 public class Meal extends AbstractBaseEntity {
+    public static final String DELETE = "Meal.delete";
+    public static final String GET_ALL = "Meal.getAll";
+    public static final String GET_ALL_BY_DATE_TIME = "Meal.getAllByDateTime";
+    @Column(name = "date_time", nullable = false)
+    @NotNull(message = "The date and time must not be null")
     private LocalDateTime dateTime;
 
+    @Column(name = "description", nullable = false)
+    @NotBlank(message = "The description of the meal must not be empty empty")
     private String description;
 
+    @Column(name = "calories", nullable = false)
+    @NotNull(message = "The calories of the meal must not be null")
+    @Min(value = 100, message = "The minimum number of calories should be at least 100.")
+    @Max(value = 10000, message = "The maximum number of calories should not exceed 5000.")
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     public Meal() {
