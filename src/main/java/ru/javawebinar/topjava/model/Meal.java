@@ -24,6 +24,7 @@ public class Meal extends AbstractBaseEntity {
     public static final String DELETE = "Meal.delete";
     public static final String GET_ALL = "Meal.getAll";
     public static final String GET_ALL_BY_DATE_TIME = "Meal.getAllByDateTime";
+
     @Column(name = "date_time", nullable = false)
     @NotNull(message = "The date and time must not be null")
     private LocalDateTime dateTime;
@@ -33,13 +34,13 @@ public class Meal extends AbstractBaseEntity {
     private String description;
 
     @Column(name = "calories", nullable = false)
-    @NotNull(message = "The calories of the meal must not be null")
     @Min(value = 100, message = "The minimum number of calories should be at least 100.")
     @Max(value = 10000, message = "The maximum number of calories should not exceed 5000.")
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", nullable = false)
+    @NotNull
     private User user;
 
     public Meal() {

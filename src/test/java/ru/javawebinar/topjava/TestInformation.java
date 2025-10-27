@@ -18,10 +18,10 @@ public class TestInformation implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                long start = System.currentTimeMillis();
+                long start = System.nanoTime();
                 statement.evaluate();
-                long time = System.currentTimeMillis() - start;
-                log.info("method - {} : time = {}ms", description.getMethodName(), time);
+                long time = System.nanoTime() - start;
+                log.info("{} : time = {}", description.getMethodName(), time);
                 collectInfo.put(description.getMethodName(), time);
             }
         };
@@ -29,7 +29,7 @@ public class TestInformation implements TestRule {
 
     public static void getInfo() {
         System.out.println("===============================Info about tests===============================");
-        collectInfo.forEach((key, value) -> System.out.printf("method - %s : time = %dms\n", key, value));
+        collectInfo.forEach((key, value) -> log.info("{} : {}", key, value));
         System.out.println("==============================================================================");
     }
 }
