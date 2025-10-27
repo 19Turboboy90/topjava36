@@ -8,10 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class TestInformation implements TestRule {
     private static final Logger log = LoggerFactory.getLogger(TestInformation.class);
     private static final Map<String, Long> collectInfo = new LinkedHashMap<>();
+    private static final StringBuilder logInfo = new StringBuilder();
 
     @Override
     public Statement apply(Statement statement, Description description) {
@@ -20,16 +22,19 @@ public class TestInformation implements TestRule {
             public void evaluate() throws Throwable {
                 long start = System.nanoTime();
                 statement.evaluate();
-                long time = System.nanoTime() - start;
-                log.info("{} : time = {}", description.getMethodName(), time);
+                long time = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+                log.info("{} : time = {} ms", description.getMethodName(), time);
                 collectInfo.put(description.getMethodName(), time);
             }
         };
     }
 
     public static void getInfo() {
-        System.out.println("===============================Info about tests===============================");
-        collectInfo.forEach((key, value) -> log.info("{} : {}", key, value));
-        System.out.println("==============================================================================");
+        logInfo.append("\n===============================Info about tests===============================\n");
+        collectInfo.forEach((key, value) ->
+                logInfo.append(String.format("%s : %d ms\n", key, value)));
+        logInfo.append("===============================================================================");
+
+        log.info(logInfo.toString());
     }
 }
