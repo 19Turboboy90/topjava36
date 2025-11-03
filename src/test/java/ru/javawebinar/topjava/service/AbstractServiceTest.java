@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
@@ -48,5 +49,11 @@ public abstract class AbstractServiceTest {
                 "\n---------------------------------" +
                 results +
                 "\n---------------------------------");
+    }
+
+    //https://stackoverflow.com/questions/5192512/how-can-i-clear-or-empty-a-stringbuilder
+    @BeforeClass
+    public static void resetResult() {
+        results.setLength(0);
     }
 }

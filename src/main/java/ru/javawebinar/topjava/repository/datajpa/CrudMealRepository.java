@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
@@ -27,6 +28,5 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
                                   @Param("userId") int userId);
 
     @Query("SELECT m FROM Meal m JOIN FETCH m.user WHERE m.id=:id AND m.user.id=:userId")
-    Meal getByIdWithUser(@Param("id") int id, @Param("userId") int userId);
-
+    Optional<Meal> getByIdWithUser(@Param("id") int id, @Param("userId") int userId);
 }
