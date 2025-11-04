@@ -8,6 +8,10 @@ import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
+
+import static org.junit.Assert.assertThrows;
+import static ru.javawebinar.topjava.UserTestData.NOT_FOUND;
 
 @ActiveProfiles(Profiles.DATAJPA)
 public class DateJpaUserServiceTest extends AbstractUserServiceTest {
@@ -24,5 +28,10 @@ public class DateJpaUserServiceTest extends AbstractUserServiceTest {
         User user = service.getByIdWithMeals(UserTestData.GUEST_ID);
         UserTestData.USER_MATCHER.assertMatch(user, UserTestData.guest);
         Assertions.assertThat(user.getMeals()).isEmpty();
+    }
+
+    @Test
+    public void getNotFound() {
+        assertThrows(NotFoundException.class, () -> service.getByIdWithMeals(NOT_FOUND));
     }
 }
