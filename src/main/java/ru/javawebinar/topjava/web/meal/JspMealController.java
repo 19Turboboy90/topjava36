@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web.meal;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
@@ -41,12 +42,12 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/new")
-    public String newForm(@ModelAttribute("meal") Meal meal) {
+    public String newForm(@ModelAttribute("meal") @Validated Meal meal) {
         return "mealForm";
     }
 
     @PostMapping("/save")
-    public String create(@ModelAttribute("meal") Meal meal) {
+    public String create(@ModelAttribute("meal") @Validated Meal meal) {
         super.create(meal);
         return "redirect:/meals";
     }
