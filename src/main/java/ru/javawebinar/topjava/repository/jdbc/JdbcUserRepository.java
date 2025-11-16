@@ -16,7 +16,6 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
-import javax.validation.Validator;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -25,17 +24,6 @@ import java.util.*;
 @Transactional(readOnly = true)
 public class JdbcUserRepository implements UserRepository {
 
-    private static final String GET_USER = """
-            SELECT *
-            FROM users
-            LEFT JOIN user_role ur ON ur.user_id = users.id
-            """;
-
-    private static final String SAVE_ROLE = """
-            INSERT INTO user_role (user_id, role)
-            VALUES (?,?);
-            """;
-
     private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
 
     private final JdbcTemplate jdbcTemplate;
@@ -43,23 +31,23 @@ public class JdbcUserRepository implements UserRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final SimpleJdbcInsert insertUser;
-    private final Validator validator;
+
+    private static final ResultSetExtractor<List<User>> USER_EXTRACTOR = new UserResultSetExtractor();
 
     @Autowired
-    public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, Validator validator) {
+    public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertUser = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
 
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        this.validator = validator;
     }
 
     @Override
     @Transactional
     public User save(User user) {
-        ValidationUtil.validate(validator, user);
+        ValidationUtil.validate(user);
 
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
@@ -84,7 +72,10 @@ public class JdbcUserRepository implements UserRepository {
         List<Object[]> args = roles.stream()
                 .map(role -> new Object[]{user.getId(), role.name()})
                 .toList();
-        jdbcTemplate.batchUpdate(SAVE_ROLE, args);
+        jdbcTemplate.batchUpdate("""
+                INSERT INTO user_role (user_id, role)
+                VALUES (?,?);
+                """, args);
     }
 
     private void deleteRoles(int userId) {
@@ -105,37 +96,55 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User get(int id) {
-        List<User> users = jdbcTemplate.query(GET_USER + " WHERE id=?", new UserResultSetExtractor(), id);
+        List<User> users = jdbcTemplate.query("""
+                SELECT *
+                FROM users
+                LEFT JOIN user_role ur ON ur.user_id = users.id
+                WHERE id=?
+                """, USER_EXTRACTOR, id);
         return DataAccessUtils.singleResult(users);
     }
 
     @Override
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        List<User> users = jdbcTemplate.query(GET_USER + " WHERE email=?", new UserResultSetExtractor(), email);
+        List<User> users = jdbcTemplate.query("""
+                SELECT *
+                FROM users
+                LEFT JOIN user_role ur ON ur.user_id = users.id
+                WHERE email=?
+                """, USER_EXTRACTOR, email);
         return DataAccessUtils.singleResult(users);
     }
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query(GET_USER + " ORDER BY name, email", new UserResultSetExtractor());
+        return jdbcTemplate.query("""
+                SELECT *
+                FROM users
+                LEFT JOIN user_role ur ON ur.user_id = users.id
+                ORDER BY name, email
+                """, USER_EXTRACTOR);
     }
 
-    private static class UserResultSetExtractor implements ResultSetExtractor<List<User>> {
+    private static final class UserResultSetExtractor implements ResultSetExtractor<List<User>> {
         @Override
         public List<User> extractData(ResultSet rs) throws SQLException, DataAccessException {
             Map<Integer, User> users = new LinkedHashMap<>();
             while (rs.next()) {
                 int userId = rs.getInt("id");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                String password = rs.getString("password");
-                Date registered = rs.getTimestamp("registered");
-                boolean enabled = rs.getBoolean("enabled");
-                int caloriesPerDay = rs.getInt("calories_per_day");
+
+                User user = users.computeIfAbsent(userId, id -> {
+                    try {
+                        User u = ROW_MAPPER.mapRow(rs, 0);
+                        u.setRoles(EnumSet.noneOf(Role.class));
+                        return u;
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
                 String role = rs.getString("role");
-                User user = users.computeIfAbsent(userId, id ->
-                        new User(id, name, email, password, caloriesPerDay, enabled, registered, EnumSet.noneOf(Role.class)));
                 if (role != null) {
                     user.getRoles().add(Role.valueOf(role));
                 }

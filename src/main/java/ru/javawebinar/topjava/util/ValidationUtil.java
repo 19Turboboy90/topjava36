@@ -11,6 +11,8 @@ import java.util.Set;
 
 public class ValidationUtil {
 
+    private static Validator validator;
+
     private ValidationUtil() {
     }
 
@@ -49,10 +51,14 @@ public class ValidationUtil {
         }
     }
 
-    public static <T> void validate(Validator validator, T object) {
+    public static <T> void validate(T object) {
         Set<ConstraintViolation<T>> violations = validator.validate(object);
         if (!violations.isEmpty()) {
             throw new IllegalArgumentException(new ConstraintViolationException(violations));
         }
+    }
+
+    public static void setValidator(Validator validator) {
+        ValidationUtil.validator = validator;
     }
 }
