@@ -4,14 +4,9 @@
 
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
-<head>
-    <title><spring:message code="meal.title"/></title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
-</head>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
-    <h3><a href="${pageContext.request.contextPath}"><spring:message code="app.home"/></a></h3>
     <hr>
     <h2>
         <c:if test="${meal.id==null}">
@@ -22,7 +17,7 @@
         </c:if>
     </h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="post" action="${pageContext.request.contextPath}${meal.id == null ? '/meals/save' : '/meals/edit'}">
+    <form method="post" action="${meal.id == null ? 'meals/save' : 'meals/edit'}">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.date-time"/></dt>

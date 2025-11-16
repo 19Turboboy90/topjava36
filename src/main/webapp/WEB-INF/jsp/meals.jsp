@@ -5,17 +5,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
-<head>
-    <title>Meals</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
-</head>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
-    <h3><a href="${pageContext.request.contextPath}"><spring:message code="app.home"/></a></h3>
     <hr/>
     <h2><spring:message code="meal.title"/></h2>
-    <form method="get" action="${pageContext.request.contextPath}/meals/filter">
+    <form method="get" action="meals/filter">
         <input type="hidden" name="action" value="filter">
         <dl>
             <dt><spring:message code="meal.from-date"/></dt>
@@ -36,7 +31,7 @@
         <button type="submit"><spring:message code="meal.filter"/></button>
     </form>
     <hr/>
-    <a href="${pageContext.request.contextPath}/meals/new"><spring:message code="meal.add"/></a>
+    <a href="meals/new"><spring:message code="meal.add"/></a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -59,10 +54,8 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="${pageContext.request.contextPath}/meals/${meal.id}/edit"><spring:message
-                        code="common.update"/></a></td>
-                <td><a href="${pageContext.request.contextPath}/meals/${meal.id}/delete"><spring:message
-                        code="common.delete"/></a></td>
+                <td><a href="meals/${meal.id}/edit"><spring:message code="common.update"/></a></td>
+                <td><a href="meals/${meal.id}/delete"><spring:message code="common.delete"/></a></td>
             </tr>
         </c:forEach>
     </table>

@@ -136,7 +136,7 @@ public class JdbcUserRepository implements UserRepository {
 
                 User user = users.computeIfAbsent(userId, id -> {
                     try {
-                        User u = ROW_MAPPER.mapRow(rs, 0);
+                        User u = ROW_MAPPER.mapRow(rs, rs.getRow());
                         u.setRoles(EnumSet.noneOf(Role.class));
                         return u;
                     } catch (SQLException e) {
