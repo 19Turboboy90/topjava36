@@ -29,4 +29,7 @@
         <appender-ref ref="console"/>
     </root>
 
+    <logger name="org.hibernate.cache" level="DEBUG"/>
+    <logger name="org.hibernate.stat" level="DEBUG"/>
+
 </configuration>

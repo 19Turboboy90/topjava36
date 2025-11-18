@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +26,6 @@ public class JspMealController extends AbstractMealController {
     public String getAll(Model model) {
         model.addAttribute("meals", super.getAll());
         return "meals";
-    }
-
-    @GetMapping("/{id}")
-    public String get(Model model, @PathVariable int id) {
-        log.info("get: id = {}", id);
-        model.addAttribute("meal", super.get(id));
-        return "meals" + id;
     }
 
     @GetMapping("/{id}/delete")
