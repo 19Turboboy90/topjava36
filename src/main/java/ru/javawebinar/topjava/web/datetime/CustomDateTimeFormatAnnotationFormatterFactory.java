@@ -31,14 +31,9 @@ public class CustomDateTimeFormatAnnotationFormatterFactory implements Annotatio
     }
 
     private Formatter<?> getFormatter(CustomDateTimeFormat annotation, Class<?> fieldType) {
-        switch (annotation.type()) {
-            case DATE -> {
-                return new CustomDateFormatter();
-            }
-            case TIME -> {
-                return new CustomTimeFormatter();
-            }
-            default -> throw new IllegalArgumentException();
-        }
+        return switch (annotation.type()) {
+            case DATE -> new CustomDateFormatter();
+            case TIME -> new CustomTimeFormatter();
+        };
     }
 }

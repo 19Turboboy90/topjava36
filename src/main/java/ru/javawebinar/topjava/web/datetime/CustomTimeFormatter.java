@@ -9,9 +9,12 @@ import java.util.Locale;
 
 @Component
 public class CustomTimeFormatter implements Formatter<LocalTime> {
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
     @Override
     public LocalTime parse(String text, Locale locale) {
-        return LocalTime.parse(text, DateTimeFormatter.ofPattern("HH:mm"));
+        return LocalTime.parse(text, FORMATTER);
     }
 
     @Override
