@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.util.datetime;
+package ru.javawebinar.topjava.web.datetime;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

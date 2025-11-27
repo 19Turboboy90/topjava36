@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.util.datetime;
+package ru.javawebinar.topjava.web.datetime;
 
 import org.springframework.format.AnnotationFormatterFactory;
 import org.springframework.format.Formatter;
@@ -38,7 +38,7 @@ public class CustomDateTimeFormatAnnotationFormatterFactory implements Annotatio
             case TIME -> {
                 return new CustomTimeFormatter();
             }
+            default -> throw new IllegalArgumentException();
         }
-        return null;
     }
 }

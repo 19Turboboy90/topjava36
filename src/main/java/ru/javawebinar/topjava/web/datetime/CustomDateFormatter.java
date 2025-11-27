@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.util.datetime;
+package ru.javawebinar.topjava.web.datetime;
 
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
