@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -92,5 +93,14 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_WITH_MEALS_MATCHER.contentJson(admin));
+    }
+
+    @Test
+    void enable() throws Exception {
+        perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID + "/enabled?enabled=false"))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        Assertions.assertThat(userService.get(USER_ID).isEnabled()).isEqualTo(false);
     }
 }

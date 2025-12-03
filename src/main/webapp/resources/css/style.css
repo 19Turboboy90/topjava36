@@ -15,6 +15,11 @@ dd {
     vertical-align: top;
 }
 
+tr[data-enabled="false"] {
+    opacity: 0.5;
+    background-color: #a8a7a7;
+}
+
 tr[data-meal-excess="false"] {
     color: green;
 }
@@ -32,9 +37,11 @@ html {
     position: relative;
     min-height: 100%;
 }
+
 body {
     margin-bottom: 60px !important; /* Margin bottom by footer height */
 }
+
 .footer {
     position: absolute;
     bottom: 0;
