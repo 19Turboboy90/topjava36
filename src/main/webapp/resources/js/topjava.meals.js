@@ -17,10 +17,6 @@ const ctx = {
     }
 };
 
-function renderTable(data) {
-    ctx.datatableApi.clear().rows.add(data).draw();
-}
-
 function clearFilter() {
     $("#filterForm")[0].reset();
     ctx.updateTable();
