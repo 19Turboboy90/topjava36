@@ -165,9 +165,9 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.details").isArray())
                 .andExpect(jsonPath("$.details", hasSize(3)))
                 .andExpect(jsonPath("$.details[*]", containsInAnyOrder(
-                        "[password] must not be blank",
-                        "[email] must not be blank",
-                        "[name] must not be blank"
+                        "must not be blank",
+                        "must not be blank",
+                        "must not be blank"
                 )));
 
     }
@@ -186,10 +186,10 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.details").isArray())
                 .andExpect(jsonPath("$.details", hasSize(4)))
                 .andExpect(jsonPath("$.details[*]", containsInAnyOrder(
-                        "[name] must not be blank",
-                        "[caloriesPerDay] must be between 10 and 10000",
-                        "[email] must not be blank",
-                        "[password] must not be blank")));
+                        "must not be blank",
+                        "must be between 10 and 10000",
+                        "must not be blank",
+                        "must not be blank")));
     }
 
     @Test

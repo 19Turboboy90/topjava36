@@ -25,6 +25,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -33,14 +34,14 @@ import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 public class ExceptionInfoHandler {
     private static final Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
 
-
-    private final MessageSourceAccessor messageSourceAccessor;
-
     private static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicated.email";
     private static final String EXCEPTION_DUPLICATE_DATETIME = "exception.meal.duplicated.dateTime";
+
     private final static Map<String, String> CONSTRAINS_I18N_MAP = Map.of(
             "users_unique_email_idx", EXCEPTION_DUPLICATE_EMAIL,
             "meal_unique_user_datetime_idx", EXCEPTION_DUPLICATE_DATETIME);
+
+    private final MessageSourceAccessor messageSourceAccessor;
 
     public ExceptionInfoHandler(MessageSourceAccessor messageSourceAccessor) {
         this.messageSourceAccessor = messageSourceAccessor;
@@ -50,7 +51,7 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(NotFoundException.class)
     public ErrorInfo notFoundError(HttpServletRequest req, NotFoundException e) {
-        return logAndGetErrorInfo(req, e, false, DATA_NOT_FOUND, List.of(e.toString()));
+        return logAndGetErrorInfo(req, e, false, DATA_NOT_FOUND, List.of(e.getMessage()));
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
@@ -66,31 +67,23 @@ public class ExceptionInfoHandler {
                 }
             }
         }
-        return logAndGetErrorInfo(req, e, true, DATA_ERROR, List.of(e.toString()));
+        return logAndGetErrorInfo(req, e, true, DATA_ERROR, List.of(Objects.requireNonNull(e.getMessage())));
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
     @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     public ErrorInfo validationError(HttpServletRequest req, Exception e) {
-        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, List.of(e.toString()));
+        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, List.of(e.getMessage()));
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorInfo internalError(HttpServletRequest req, Exception e) {
-        return logAndGetErrorInfo(req, e, true, APP_ERROR, List.of(e.toString()));
+        return logAndGetErrorInfo(req, e, true, APP_ERROR, List.of(e.getMessage()));
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorInfo validationError(HttpServletRequest req, MethodArgumentNotValidException e) {
-        List<String> errorList = getMessageErrors(e);
-
-        return logAndGetErrorInfo(req, e, true, VALIDATION_ERROR, errorList);
-    }
-
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    @ExceptionHandler(BindException.class)
+    @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
     public ErrorInfo validationError(HttpServletRequest req, BindException e) {
         List<String> errorList = getMessageErrors(e);
         return logAndGetErrorInfo(req, e, true, VALIDATION_ERROR, errorList);
@@ -101,7 +94,7 @@ public class ExceptionInfoHandler {
         return bindingResult
                 .getFieldErrors()
                 .stream()
-                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
+                .map(fe -> String.format("%s", fe.getDefaultMessage()))
                 .toList();
     }
 

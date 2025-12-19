@@ -14,21 +14,21 @@ public class UserTo extends BaseTo implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @NotBlank
-    @Size(min = 2, max = 100)
+    @NotBlank(message = "{exception.user.name}")
+    @Size(min = 2, max = 100, message = "{exception.user.name.length}")
     private String name;
 
-    @Email
-    @NotBlank
-    @Size(max = 100)
+    @Email(message = "{exception.user.email}")
+    @NotBlank(message = "{exception.user.email.empty}")
+    @Size(max = 100, message = "{exception.user.email.size}")
     private String email;
 
-    @NotBlank
-    @Size(min = 5, max = 32, message = "length must be between 5 and 32 characters")
+    @NotBlank(message = "{exception.user.password.empty}")
+    @Size(min = 5, max = 32, message = "{exception.user.password.length}")
     private String password;
 
-    @Range(min = 10, max = 10000)
-    @NotNull
+    @Range(min = 10, max = 10000, message = "{exception.user.calories.range}")
+    @NotNull(message = "{exception.user.password.empty}")
     private Integer caloriesPerDay = UsersUtil.DEFAULT_CALORIES_PER_DAY;
 
     public UserTo() {
