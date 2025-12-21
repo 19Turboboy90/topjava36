@@ -33,8 +33,7 @@ public class UserValidator implements Validator {
 
         if (exist != null && !exist.getId().equals(userTo.getId())) {
             errors.rejectValue(
-                    "email",
-                    "exception.user.duplicated.email"
+                    "email", "exception.user.duplicated.email"
             );
         }
     }

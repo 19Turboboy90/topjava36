@@ -147,10 +147,10 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.details").isArray())
                 .andExpect(jsonPath("$.details", hasSize(4)))
                 .andExpect(jsonPath("$.details[*]", containsInAnyOrder(
-                        "must not be blank",
-                        "size must be between 2 and 120",
-                        "must be between 10 and 5000",
-                        "must not be null"
+                        "[description] must not be blank",
+                        "[description] size must be between 2 and 120",
+                        "[calories] must be between 10 and 5000",
+                        "[dateTime] must not be null"
                 )));
     }
 
@@ -168,10 +168,10 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.details").isArray())
                 .andExpect(jsonPath("$.details", hasSize(4)))
                 .andExpect(jsonPath("$.details[*]", containsInAnyOrder(
-                        "must not be blank",
-                        "size must be between 2 and 120",
-                        "must be between 10 and 5000",
-                        "must not be null"
+                        "[description] must not be blank",
+                        "[description] size must be between 2 and 120",
+                        "[calories] must be between 10 and 5000",
+                        "[dateTime] must not be null"
                 )));
     }
 

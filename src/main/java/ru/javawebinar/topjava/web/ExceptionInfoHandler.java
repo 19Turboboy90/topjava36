@@ -94,7 +94,7 @@ public class ExceptionInfoHandler {
         return bindingResult
                 .getFieldErrors()
                 .stream()
-                .map(fe -> String.format("%s", fe.getDefaultMessage()))
+                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
                 .toList();
     }
 

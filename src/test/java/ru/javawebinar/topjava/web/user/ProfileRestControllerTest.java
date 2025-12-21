@@ -106,10 +106,10 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.details").isArray())
                 .andExpect(jsonPath("$.details", hasSize(4)))
                 .andExpect(jsonPath("$.details[*]", containsInAnyOrder(
-                        "The password must not be empty",
-                        "The calorie intake range should be from 10 to 10000",
-                        "The mail field should not be empty",
-                        "The name should not be empty"
+                        "[password] The password must not be empty",
+                        "[caloriesPerDay] The calorie intake range should be from 10 to 10000",
+                        "[email] The mail field should not be empty",
+                        "[name] The name should not be empty"
                 )));
     }
 
@@ -127,10 +127,10 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.details").isArray())
                 .andExpect(jsonPath("$.details", hasSize(4)))
                 .andExpect(jsonPath("$.details[*]", containsInAnyOrder(
-                        "The password must not be empty",
-                        "The calorie intake range should be from 10 to 10000",
-                        "The mail field should not be empty",
-                        "The name should not be empty"
+                        "[password] The password must not be empty",
+                        "[caloriesPerDay] The calorie intake range should be from 10 to 10000",
+                        "[email] The mail field should not be empty",
+                        "[name] The name should not be empty"
                 )));
     }
 

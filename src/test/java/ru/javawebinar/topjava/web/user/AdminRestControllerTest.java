@@ -157,17 +157,18 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .cookie(new Cookie("localeCookie", "en"))
                 .with(userHttpBasic(admin))
-                .content(JsonUtil.writeValue(new User())))
+                .content(JsonUtil.writeValue(new User(null, null, null, null, 0))))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.url").value("http://localhost" + REST_URL))
                 .andExpect(jsonPath("$.type").value("VALIDATION_ERROR"))
                 .andExpect(jsonPath("$.details").isArray())
-                .andExpect(jsonPath("$.details", hasSize(3)))
+                .andExpect(jsonPath("$.details", hasSize(4)))
                 .andExpect(jsonPath("$.details[*]", containsInAnyOrder(
-                        "must not be blank",
-                        "must not be blank",
-                        "must not be blank"
+                        "[password] must not be blank",
+                        "[caloriesPerDay] must be between 10 and 10000",
+                        "[name] must not be blank",
+                        "[email] must not be blank"
                 )));
 
     }
@@ -178,7 +179,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .cookie(new Cookie("localeCookie", "en"))
                 .with(userHttpBasic(admin))
-                .content(JsonUtil.writeValue(new UserTo(null, null, null, null, 0))))
+                .content(JsonUtil.writeValue(new User(null, null, null, null, 0))))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.url").value("http://localhost" + REST_URL + USER_ID))
@@ -186,10 +187,10 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.details").isArray())
                 .andExpect(jsonPath("$.details", hasSize(4)))
                 .andExpect(jsonPath("$.details[*]", containsInAnyOrder(
-                        "must not be blank",
-                        "must be between 10 and 10000",
-                        "must not be blank",
-                        "must not be blank")));
+                        "[password] must not be blank",
+                        "[caloriesPerDay] must be between 10 and 10000",
+                        "[name] must not be blank",
+                        "[email] must not be blank")));
     }
 
     @Test
